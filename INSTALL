@@ -7,3 +7,7 @@ go to tools/  and follow INSTALL instructions there.
 (2) 
 go to src/ and follow INSTALL instructions there.
 
+这是官方的安装说明文档。
+1.在src中是UNIX系系统的安装说明，在UNIX下安装首先要安装tool文件夹下依赖的其他工具库
+2.如果要在Windows下安装，需要看主目录下安装说明文件windows/INSTALL
+

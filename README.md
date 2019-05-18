@@ -4,14 +4,13 @@
 [![Build Status](https://travis-ci.com/kaldi-asr/kaldi.svg?branch=master)](https://travis-ci.com/kaldi-asr/kaldi)
 Kaldi Speech Recognition Toolkit
 ================================
+阅读`./INSTALL`了解如何构建整个kaldi的工具包。这些说明适用于UNIX系的系统，包括各种Linux的发行版,Darwin和Cygwin。<br>
+阅读`windows/INSTALL`，获得Windows系统的安装说明
 
-To build the toolkit: see `./INSTALL`.  These instructions are valid for UNIX
-systems including various flavors of Linux; Darwin; and Cygwin (has not been
-tested on more "exotic" varieties of UNIX).  For Windows installation
-instructions (excluding Cygwin), see `windows/INSTALL`.
+<br>
+阅读`egs/README.txt`获得运行kalid示例的说明
 
-To run the example system builds, see `egs/README.txt`
-
+<br>
 If you encounter problems (and you probably will), please do not hesitate to
 contact the developers (see below). In addition to specific questions, please
 let us know if there are specific aspects of the project that you feel could be
