@@ -1,3 +1,6 @@
+# 这个是自己看kaldi笔记，同时也是给了很多注释
+## 最开始是从看声纹识别开始，从MFCC特征提取到GMM
+
 [![Build Status](https://travis-ci.com/kaldi-asr/kaldi.svg?branch=master)](https://travis-ci.com/kaldi-asr/kaldi)
 Kaldi Speech Recognition Toolkit
 ================================
