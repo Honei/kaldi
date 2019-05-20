@@ -32,14 +32,15 @@ namespace kaldi {
 /// @addtogroup  feat FeatureExtraction
 /// @{
 
+  //抽取MFCC特征的配置选项
 struct FrameExtractionOptions {
-  BaseFloat samp_freq;
-  BaseFloat frame_shift_ms;  // in milliseconds.
-  BaseFloat frame_length_ms;  // in milliseconds.
-  BaseFloat dither;  // Amount of dithering, 0.0 means no dither.
-  BaseFloat preemph_coeff;  // Preemphasis coefficient.
-  bool remove_dc_offset;  // Subtract mean of wave before FFT.
-  std::string window_type;  // e.g. Hamming window
+  BaseFloat samp_freq;        //采样率
+  BaseFloat frame_shift_ms;  // in milliseconds.  帧长
+  BaseFloat frame_length_ms;  // in milliseconds. 帧移
+  BaseFloat dither;  // Amount of dithering, 0.0 means no dither. 是否对每个数据点产生随机噪声抖动
+  BaseFloat preemph_coeff;  // Preemphasis coefficient.       预加重的系数
+  bool remove_dc_offset;  // Subtract mean of wave before FFT.  
+  std::string window_type;  // e.g. Hamming window        加窗函数的类型
   // May be "hamming", "rectangular", "povey", "hanning", "blackman"
   // "povey" is a window I made to be similar to Hamming but to go to zero at the
   // edges, it's pow((0.5 - 0.5*cos(n/N*2*pi)), 0.85)
@@ -50,14 +51,14 @@ struct FrameExtractionOptions {
   bool allow_downsample;
   bool allow_upsample;
   int max_feature_vectors;
-  FrameExtractionOptions():
-      samp_freq(16000),
-      frame_shift_ms(10.0),
-      frame_length_ms(25.0),
+  FrameExtractionOptions():   //生成一个MFCC特征选项时，会有默认值保证MFCC类可以正常的运行
+      samp_freq(16000),         //默认的采样率是16K
+      frame_shift_ms(10.0),     //默认帧移是10ms
+      frame_length_ms(25.0),    //默认的帧长是25ms
       dither(1.0),
-      preemph_coeff(0.97),
+      preemph_coeff(0.97),    //默认的预加重参数是0.97
       remove_dc_offset(true),
-      window_type("povey"),
+      window_type("povey"),   //默认的窗函数是povey
       round_to_power_of_two(true),
       blackman_coeff(0.42),
       snip_edges(true),
