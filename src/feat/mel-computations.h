@@ -41,14 +41,14 @@ struct FrameExtractionOptions;  // defined in feature-window.h
 
 
 struct MelBanksOptions {
-  int32 num_bins;  // e.g. 25; number of triangular bins
-  BaseFloat low_freq;  // e.g. 20; lower frequency cutoff
-  BaseFloat high_freq;  // an upper frequency cutoff; 0 -> no cutoff, negative
+  int32 num_bins;  // e.g. 25;  定义了梅尔三角滤波器的数目，默认值是25
+  BaseFloat low_freq;  // e.g. 20; 定义了最低频率，默认值是20Hz
+  BaseFloat high_freq;  // an upper frequency cutoff; 0 -> no cutoff, negative，最高截止频率
   // ->added to the Nyquist frequency to get the cutoff.
   BaseFloat vtln_low;  // vtln lower cutoff of warping function.
   BaseFloat vtln_high;  // vtln upper cutoff of warping function: if negative, added
                         // to the Nyquist frequency to get the cutoff.
-  bool debug_mel;
+  bool debug_mel; //debug模式，在该模式下可以打印梅尔滤波器的系数
   // htk_mode is a "hidden" config, it does not show up on command line.
   // Enables more exact compatibibility with HTK, for testing purposes.  Affects
   // mel-energy flooring and reproduces a bug in HTK.
@@ -74,14 +74,15 @@ struct MelBanksOptions {
   }
 };
 
-
+//梅尔倒谱类，通过这个类可以计算音频的梅尔倒谱特征
 class MelBanks {
  public:
-
+  //计算从梅尔域到频率域的转换
   static inline BaseFloat InverseMelScale(BaseFloat mel_freq) {
     return 700.0f * (expf (mel_freq / 1127.0f) - 1.0f);
   }
 
+  //计算从频域到梅尔域的转换
   static inline BaseFloat MelScale(BaseFloat freq) {
     return 1127.0f * logf (1.0f + freq / 700.0f);
   }
@@ -108,6 +109,7 @@ class MelBanks {
 
   /// Compute Mel energies (note: not log enerties).
   /// At input, "fft_energies" contains the FFT energies (not log).
+  //计算梅尔倒谱，输入的是经过fft处理之后的数据
   void Compute(const VectorBase<BaseFloat> &fft_energies,
                VectorBase<BaseFloat> *mel_energies_out) const;
 
@@ -136,6 +138,7 @@ class MelBanks {
 
 
 // Compute liftering coefficients (scaling on cepstral coeffs)
+  //计算同态滤波的系数
 // coeffs are numbered slightly differently from HTK: the zeroth
 // index is C0, which is not affected.
 void ComputeLifterCoeffs(BaseFloat Q, VectorBase<BaseFloat> *coeffs);
