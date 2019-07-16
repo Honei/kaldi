@@ -35,10 +35,15 @@ namespace kaldi {
 
 
 /// MfccOptions contains basic options for computing MFCC features.
+//MfccOptions包含了计算MFCC特征的基本配置
+//MFCC特征的架构是feature-mfcc  --->  MelBanks   --->  FrameFeature
+//最低成是一帧一帧的相关配置和计算内容
+//上一层是计算梅尔倒谱
+//最上层是对梅尔倒谱进行处理，的到梅尔系数最为特征
 struct MfccOptions {
   FrameExtractionOptions frame_opts;
   MelBanksOptions mel_opts;
-  int32 num_ceps;  // e.g. 13: num cepstral coeffs, counting zero.
+  int32 num_ceps;  // e.g. 13: num cepstral coeffs, counting zero., 梅尔系数的数目，默认值是13
   bool use_energy;  // use energy; else C0
   BaseFloat energy_floor;  // 0 by default; set to a value like 1.0 or 0.1 if
                            // you disable dithering.
