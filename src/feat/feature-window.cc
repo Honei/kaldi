@@ -41,6 +41,7 @@ int64 FirstSampleOfFrame(int32 frame,
   }
 }
 
+//返回一个语音帧的帧数，默认情况下设置opts.snip_edges=true
 int32 NumFrames(int64 num_samples,
                 const FrameExtractionOptions &opts,
                 bool flush) {
@@ -50,10 +51,14 @@ int32 NumFrames(int64 num_samples,
     // with --snip-edges=true (the default), we use a HTK-like approach to
     // determining the number of frames-- all frames have to fit completely into
     // the waveform, and the first frame begins at sample zero.
-    if (num_samples < frame_length)
+    // 在 --snip-edges=true的情况下（这个是默认值），将会使用与HTK类似的方式去计算一个音频的帧数
+    // 所以帧必须完全适合波形，第一帧从样本零开始。
+    if (num_samples < frame_length)   //如果一个音频的采样点数不够一帧，那么帧数就是0
       return 0;
     else
-      return (1 + ((num_samples - frame_length) / frame_shift));
+      return (1 + ((num_samples - frame_length) / frame_shift));  
+      //如果采样点很多，那么是减去第一帧的帧长，后面是每一个帧移都是一帧，
+      //然后再加上第一帧，这是音频可以拆分的帧数
     // You can understand the expression above as follows: 'num_samples -
     // frame_length' is how much room we have to shift the frame within the
     // waveform; 'frame_shift' is how much we shift it each time; and the ratio
@@ -99,13 +104,16 @@ void Dither(VectorBase<BaseFloat> *waveform, BaseFloat dither_value) {
     data[i] += RandGauss(&rstate) * dither_value;
 }
 
-
+//预加重，提高高频分量
+//计算公式waveform[i]=waveform[i] - preemph_coeff * waveform[i-1]
+//第一个点waveform[0] = wavform[0] - preemph_coeff * waveform[0]
+  //从最后一个点开始计算，不同额外申请空间，时间复杂度也较优
 void Preemphasize(VectorBase<BaseFloat> *waveform, BaseFloat preemph_coeff) {
-  if (preemph_coeff == 0.0) return;
-  KALDI_ASSERT(preemph_coeff >= 0.0 && preemph_coeff <= 1.0);
+  if (preemph_coeff == 0.0) return; //如果预加重系数是0，则直接返回，不需要预加重
+  KALDI_ASSERT(preemph_coeff >= 0.0 && preemph_coeff <= 1.0); //校验预加重的稳定性，系数必须要在[0,1]范围之内
   for (int32 i = waveform->Dim()-1; i > 0; i--)
-    (*waveform)(i) -= preemph_coeff * (*waveform)(i-1);
-  (*waveform)(0) -= preemph_coeff * (*waveform)(0);
+    (*waveform)(i) -= preemph_coeff * (*waveform)(i-1);//从最后一个点开始计算，第一个点不计算，
+  (*waveform)(0) -= preemph_coeff * (*waveform)(0); 
 }
 
 FeatureWindowFunction::FeatureWindowFunction(const FrameExtractionOptions &opts) {
