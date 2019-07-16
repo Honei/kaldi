@@ -106,9 +106,13 @@ struct FrameExtractionOptions {
                    "If true, allow the input waveform to have a lower frequency than "
                    "the specified --sample-frequency (and we'll upsample).");
   }
+  
+  //返回帧移的采样点的数目
   int32 WindowShift() const {
     return static_cast<int32>(samp_freq * 0.001 * frame_shift_ms);
   }
+  
+  //返回一帧帧长的采样点的数目
   int32 WindowSize() const {
     return static_cast<int32>(samp_freq * 0.001 * frame_length_ms);
   }
@@ -154,6 +158,9 @@ int32 NumFrames(int64 num_samples,
    'frame'.  If snip-edges=true, it just returns frame * opts.WindowShift(); if
    snip-edges=false, the formula is a little more complicated and the result may
    be negative.
+   此函数返回索引帧“frame”的第一个样本的索引。 
+   如果snip-edges = true，则只返回frame * opts.WindowShift（）; 
+   如果snip-edges = false，则公式稍微复杂一些，结果可能是负数。   
 */
 int64 FirstSampleOfFrame(int32 frame,
                          const FrameExtractionOptions &opts);
