@@ -35,12 +35,14 @@ namespace kaldi {
   //抽取MFCC特征的配置选项
 struct FrameExtractionOptions {
   BaseFloat samp_freq;        //采样率
-  BaseFloat frame_shift_ms;  // in milliseconds.  帧长
-  BaseFloat frame_length_ms;  // in milliseconds. 帧移
+  BaseFloat frame_shift_ms;  //帧长，单位是毫秒ms
+  BaseFloat frame_length_ms;  // 帧移，单位是毫秒ms
   BaseFloat dither;  // Amount of dithering, 0.0 means no dither. 是否对每个数据点产生随机噪声抖动
   BaseFloat preemph_coeff;  // Preemphasis coefficient.       预加重的系数
   bool remove_dc_offset;  // Subtract mean of wave before FFT.  
-  std::string window_type;  // e.g. Hamming window        加窗函数的类型
+  std::string window_type;  // 加窗函数的类型，例如汉明窗Hamming
+  // window_type可以取值的范围是"Hamminig", "rectangular", "povey", "hanning", "blcakman"这几种窗函数
+  // "povey"窗是Dinel Povey发明的一种窗函数，很类似于汉明窗
   // May be "hamming", "rectangular", "povey", "hanning", "blackman"
   // "povey" is a window I made to be similar to Hamming but to go to zero at the
   // edges, it's pow((0.5 - 0.5*cos(n/N*2*pi)), 0.85)
@@ -48,15 +50,15 @@ struct FrameExtractionOptions {
   bool round_to_power_of_two;
   BaseFloat blackman_coeff;
   bool snip_edges;
-  bool allow_downsample;
+  bool allow_downsample;    //允许降采样，假设模型是8K的模型，音频是16K的音频，通过该参数可以将音频降采样到和模型一样的采样率
   bool allow_upsample;
   int max_feature_vectors;
-  FrameExtractionOptions():   //生成一个MFCC特征选项时，会有默认值保证MFCC类可以正常的运行
+  FrameExtractionOptions():   //构造函数，生成一个MFCC特征选项时，会有默认值保证MFCC类可以正常的运行
       samp_freq(16000),         //默认的采样率是16K
       frame_shift_ms(10.0),     //默认帧移是10ms
       frame_length_ms(25.0),    //默认的帧长是25ms
-      dither(1.0),
-      preemph_coeff(0.97),    //默认的预加重参数是0.97
+      dither(1.0),              //默认添加dither=1.0的扰动，这会导致每次生成的特征数据有细微的差异，将这个参数设置为0.0,移除扰动
+      preemph_coeff(0.97),      //默认的预加重参数是0.97
       remove_dc_offset(true),
       window_type("povey"),   //默认的窗函数是povey
       round_to_power_of_two(true),
@@ -127,6 +129,7 @@ struct FeatureWindowFunction {
 
 
 /**
+   这个函数返回给定数目采样点下，可以从音频文件中抽取的帧数，假设音频和opts中有相同的采样率
    This function returns the number of frames that we can extract from a wave
    file with the given number of samples in it (assumed to have the same
    sampling rate as specified in 'opts').
@@ -162,6 +165,8 @@ void Dither(VectorBase<BaseFloat> *waveform, BaseFloat dither_value);
 void Preemphasize(VectorBase<BaseFloat> *waveform, BaseFloat preemph_coeff);
 
 /**
+  该函数在实际提取加窗信号后执行所有加窗的步骤：
+  根据配置，它通过加窗函数进行抖动，直流偏移消除，预加重和乘法。  
   This function does all the windowing steps after actually
   extracting the windowed signal: depeding on the
   configuration, it does dithering, dc offset removal,
