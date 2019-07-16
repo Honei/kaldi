@@ -26,7 +26,9 @@
 
 namespace kaldi {
 
-
+//返回每一帧开始的采样点的索引
+//如果opts.snip_edges=true, 直接
+// 直接获取帧下标和帧移的乘积
 int64 FirstSampleOfFrame(int32 frame,
                          const FrameExtractionOptions &opts) {
   int64 frame_shift = opts.WindowShift();
